@@ -4,7 +4,7 @@ PATH = './public/memo_files/'
 
 require 'sinatra'
 require 'sinatra/reloader'
-require 'json'
+require 'pg'
 require './memo'
 
 helpers do
@@ -13,13 +13,19 @@ helpers do
     html_escape(string)
   end
 
-  def check_file_exist(file)
-    halt 404 unless file.id
+  def check_column_exist(object)
+    halt 404 unless object.id
+  end
+
+  def create_memo_object(id)
+    memo = Memo.new(id)
+    check_column_exist(memo)
+    memo
   end
 end
 
 get '/' do
-  @display_files = Dir.entries(PATH).sort.reject { |file| file =~ /^\..?/ }
+  @memos = Memo.show_all_memos
   erb :index
 end
 
@@ -27,31 +33,27 @@ get '/memos/new' do
   erb :form
 end
 post '/memos/new' do
-  Memo.generate_new_memo(params[:title], params[:description])
+  Memo.insert_new_memo(params[:title], params[:description])
   redirect to('/')
 end
 
 get '/memos/:id' do |id|
-  @memo = Memo.new(id)
-  check_file_exist(@memo)
+  @memo = create_memo_object(id)
   erb :detail
 end
 delete '/memos/:id' do |id|
-  memo = Memo.new(id)
-  check_file_exist(memo)
+  memo = create_memo_object(id)
   memo.delete_memo
   redirect to('/')
 end
 
 get '/memos/:id/edit' do |id|
-  @memo = Memo.new(id)
-  check_file_exist(@memo)
+  @memo = create_memo_object(id)
   erb :edit
 end
 patch '/memos/:id/edit' do |id|
-  memo = Memo.new(id)
-  check_file_exist(memo)
-  memo.save_memo(params[:title], params[:description])
+  memo = create_memo_object(id)
+  memo.update_memo(params[:title], params[:description])
   redirect to('/')
 end
 
