@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-PATH = './public/memo_files/'
-
 require 'sinatra'
 require 'sinatra/reloader'
 require 'json'
@@ -19,15 +17,20 @@ helpers do
 end
 
 get '/' do
-  @display_files = Dir.entries(PATH).sort.reject { |file| file =~ /^\..?/ }
+  redirect to('/memos')
+end
+
+get '/memos' do
+  @memos = Memo.all
   erb :index
 end
 
 get '/memos/new' do
-  erb :form
+  erb :new
 end
-post '/memos/new' do
-  Memo.generate_new_memo(params[:title], params[:description])
+
+post '/memos' do
+  Memo.create(params[:title], params[:description])
   redirect to('/')
 end
 
@@ -36,11 +39,12 @@ get '/memos/:id' do |id|
   check_file_exist(@memo)
   erb :detail
 end
+
 delete '/memos/:id' do |id|
   memo = Memo.new(id)
   check_file_exist(memo)
-  memo.delete_memo
-  redirect to('/')
+  memo.delete
+  redirect to('/memos')
 end
 
 get '/memos/:id/edit' do |id|
@@ -48,11 +52,12 @@ get '/memos/:id/edit' do |id|
   check_file_exist(@memo)
   erb :edit
 end
-patch '/memos/:id/edit' do |id|
+
+patch '/memos/:id' do |id|
   memo = Memo.new(id)
   check_file_exist(memo)
-  memo.save_memo(params[:title], params[:description])
-  redirect to('/')
+  memo.save(params[:title], params[:description])
+  redirect to('/memos')
 end
 
 not_found do

@@ -2,7 +2,9 @@
 
 # Memo Class
 class Memo
-  attr_accessor :id, :title, :description
+  attr_reader :id, :title, :description
+
+  PATH = './public/memo_files/'
 
   class << self
     def open_file_and_generate_json(file_name, ruby_hash)
@@ -11,32 +13,36 @@ class Memo
       end
     end
 
-    def generate_new_memo(title, description)
+    def create(title, description)
       new_memo = { 'title': title, 'description': description }
       file_name = "#{PATH}#{Time.now.to_i}.json"
       open_file_and_generate_json(file_name, new_memo)
+    end
+
+    def all
+      display_files = Dir.entries(PATH).sort.reject { |file| file =~ /^\..?/ }
+      memos = []
+      display_files.each { |file| memos << Memo.new(file.to_s.delete('.json')) }
+      memos
     end
   end
 
   def initialize(id)
     return unless File.exist?("#{PATH}#{id}.json")
 
-    memo =
-      File.open("#{PATH}#{id}.json") do |f|
-        JSON.parse(f.read, symbolize_names: true)
-      end
+    memo = File.open("#{PATH}#{id}.json") { |f| JSON.parse(f.read, symbolize_names: true) }
     @id = id
     @title = memo[:title]
     @description = memo[:description]
   end
 
-  def save_memo(title, description)
+  def save(title, description)
     edited_memo = { 'title': title, 'description': description }
     file_name = "#{PATH}#{@id}.json"
     Memo.open_file_and_generate_json(file_name, edited_memo)
   end
 
-  def delete_memo
+  def delete
     File.delete("#{PATH}#{@id}.json")
   end
 end
