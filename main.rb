@@ -15,7 +15,7 @@ helpers do
     halt 404 unless object.id
   end
 
-  def create_memo_object(id)
+  def create_object_and_check_exist(id)
     memo = Memo.new(id)
     check_column_exist(memo)
     memo
@@ -27,7 +27,7 @@ get '/' do
 end
 
 get '/memos' do
-  @memos = Memo.show_all_memos
+  @memos = Memo.all
   erb :index
 end
 
@@ -36,29 +36,29 @@ get '/memos/new' do
 end
 
 post '/memos' do
-  Memo.insert_new_memo(params[:title], params[:description])
+  Memo.create(params[:title], params[:description])
   redirect to('/memos')
 end
 
 get '/memos/:id' do |id|
-  @memo = create_memo_object(id)
+  @memo = create_object_and_check_exist(id)
   erb :detail
 end
 
 delete '/memos/:id' do |id|
-  memo = create_memo_object(id)
-  memo.delete_memo
+  memo = create_object_and_check_exist(id)
+  memo.delete
   redirect to('/memos')
 end
 
 get '/memos/:id/edit' do |id|
-  @memo = create_memo_object(id)
+  @memo = create_object_and_check_exist(id)
   erb :edit
 end
 
 patch '/memos/:id' do |id|
-  memo = create_memo_object(id)
-  memo.update_memo(params[:title], params[:description])
+  memo = create_object_and_check_exist(id)
+  memo.update(params[:title], params[:description])
   redirect to('/memos')
 end
 
