@@ -25,6 +25,10 @@ helpers do
 end
 
 get '/' do
+  redirect to('/memos')
+end
+
+get '/memos' do
   @memos = Memo.show_all_memos
   erb :index
 end
@@ -32,29 +36,32 @@ end
 get '/memos/new' do
   erb :form
 end
-post '/memos/new' do
+
+post '/memos' do
   Memo.insert_new_memo(params[:title], params[:description])
-  redirect to('/')
+  redirect to('/memos')
 end
 
 get '/memos/:id' do |id|
   @memo = create_memo_object(id)
   erb :detail
 end
+
 delete '/memos/:id' do |id|
   memo = create_memo_object(id)
   memo.delete_memo
-  redirect to('/')
+  redirect to('/memos')
 end
 
 get '/memos/:id/edit' do |id|
   @memo = create_memo_object(id)
   erb :edit
 end
-patch '/memos/:id/edit' do |id|
+
+patch '/memos/:id' do |id|
   memo = create_memo_object(id)
   memo.update_memo(params[:title], params[:description])
-  redirect to('/')
+  redirect to('/memos')
 end
 
 not_found do
