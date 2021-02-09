@@ -21,9 +21,7 @@ class Memo
 
     def all
       display_files = Dir.entries(PATH).sort.reject { |file| file =~ /^\..?/ }
-      memos = []
-      display_files.each { |file| memos << Memo.new(file.to_s.delete('.json')) }
-      memos
+      display_files.map { |file| Memo.new(file.to_s.delete('.json')) }
     end
   end
 
