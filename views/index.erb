@@ -1,0 +1,12 @@
+<a href="/memos/new"><button type="button" class="btn btn-primary mb-3">新規追加</button></a>
+<% if @memos.size.zero? %>
+  <p>まだメモはありません。</p>
+<% else %>
+  <div class="card">
+    <ul class="list-group list-group-flush">
+      <% @memos.each do |memo| %>
+        <li class="list-group-item"><a href="/memos/<%= escape(memo.id) %>"><%= escape(memo.title) %></a></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

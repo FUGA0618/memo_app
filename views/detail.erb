@@ -1,0 +1,11 @@
+<div class="card">
+  <h5 class="card-header"><%= escape(@memo.title) %></h5>
+  <div class="card-body">
+    <p class="card-text"><%= escape(@memo.description) %></p>
+    <a href="/memos/<%= @memo.id %>/edit" class="btn btn-primary">編集</a>
+    <form method="POST" action="/memos/<%= @memo.id %>" style="display: inline">
+      <input type="submit" value="削除" class="btn btn-danger ml-3">
+      <input type="hidden" name="_method" value="DELETE">
+    </form>
+  </div>
+</div>
