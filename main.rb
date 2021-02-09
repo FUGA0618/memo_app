@@ -32,7 +32,7 @@ get '/memos' do
 end
 
 get '/memos/new' do
-  erb :form
+  erb :new
 end
 
 post '/memos' do
