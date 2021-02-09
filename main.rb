@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-PATH = './public/memo_files/'
-
 require 'sinatra'
 require 'sinatra/reloader'
 require 'pg'
