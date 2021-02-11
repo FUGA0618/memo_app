@@ -9,8 +9,6 @@ class Memo
   class << self
     def execute_query(query, params = [])
       @connection.exec_params(query, params)
-    rescue PG::InvalidTextRepresentation
-      nil
     end
 
     def create(title, description)
@@ -26,6 +24,8 @@ class Memo
   end
 
   def initialize(id)
+    return if id.to_i.zero?
+
     query = 'SELECT title, description FROM Memos WHERE id = $1'
     params = [id]
     memo = Memo.execute_query(query, params)
