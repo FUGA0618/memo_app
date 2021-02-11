@@ -11,13 +11,13 @@ helpers do
     html_escape(string)
   end
 
-  def check_column_exist(object)
+  def exists_object(object)
     halt 404 unless object.id
   end
 
-  def create_object_and_check_exist(id)
+  def build_object_and_exists(id)
     memo = Memo.new(id)
-    check_column_exist(memo)
+    exists_object(memo)
     memo
   end
 end
@@ -41,23 +41,23 @@ post '/memos' do
 end
 
 get '/memos/:id' do |id|
-  @memo = create_object_and_check_exist(id)
+  @memo = build_object_and_exists(id)
   erb :detail
 end
 
 delete '/memos/:id' do |id|
-  memo = create_object_and_check_exist(id)
+  memo = build_object_and_exists(id)
   memo.delete
   redirect to('/memos')
 end
 
 get '/memos/:id/edit' do |id|
-  @memo = create_object_and_check_exist(id)
+  @memo = build_object_and_exists(id)
   erb :edit
 end
 
 patch '/memos/:id' do |id|
-  memo = create_object_and_check_exist(id)
+  memo = build_object_and_exists(id)
   memo.update(params[:title], params[:description])
   redirect to('/memos')
 end
