@@ -1,5 +1,5 @@
 <a href="/memos/new"><button type="button" class="btn btn-primary mb-3">新規追加</button></a>
-<% if @memos.ntuples() == 0 %>
+<% if @memos.ntuples.zero? %>
   <p>まだメモはありません。</p>
 <% else %>
   <div class="card">
