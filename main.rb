@@ -11,14 +11,10 @@ helpers do
     html_escape(string)
   end
 
-  def exists_object(object)
-    halt 404 unless object.id
-  end
-
   def build_object_and_exists(id)
-    memo = Memo.new(id)
-    exists_object(memo)
-    memo
+    memo = Memo.find(id)
+    halt 404 unless memo
+    Memo.new(id, memo[0]['title'], memo[0]['description'])
   end
 end
 

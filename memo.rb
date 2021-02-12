@@ -21,23 +21,23 @@ class Memo
       query = 'SELECT * FROM Memos ORDER BY id'
       Memo.execute_query(query)
     end
+
+    def find(id)
+      query = 'SELECT title, description FROM Memos WHERE id = $1'
+      params = [id.to_i]
+      memo = Memo.execute_query(query, params)
+      memo.ntuples.zero? ? nil : memo
+    end
   end
 
-  def initialize(id)
-    return if id.to_i.zero?
-
-    query = 'SELECT title, description FROM Memos WHERE id = $1'
-    params = [id]
-    memo = Memo.execute_query(query, params)
-    return if !memo || memo.cmd_tuples.zero?
-
+  def initialize(id, title, description)
     @id = id
-    @title = memo[0]['title']
-    @description = memo[0]['description']
+    @title = title
+    @description = description
   end
 
   def update(title, description)
-    query = 'UPDATE Memos SET title=$1, description=$2 WHERE id = $3'
+    query = 'UPDATE Memos SET title= $1, description= $2 WHERE id = $3'
     params = [title, description, @id]
     Memo.execute_query(query, params)
   end
