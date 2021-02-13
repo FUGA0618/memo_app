@@ -2,7 +2,7 @@
 
 require 'sinatra'
 require 'sinatra/reloader'
-require 'json'
+require 'pg'
 require './memo'
 
 helpers do
@@ -11,8 +11,10 @@ helpers do
     html_escape(string)
   end
 
-  def check_file_exist(file)
-    halt 404 unless file.id
+  def find_memo(id)
+    memo = Memo.find(id)
+    halt 404 unless memo
+    Memo.new(id, memo['title'], memo['description'])
   end
 end
 
@@ -31,32 +33,28 @@ end
 
 post '/memos' do
   Memo.create(params[:title], params[:description])
-  redirect to('/')
+  redirect to('/memos')
 end
 
 get '/memos/:id' do |id|
-  @memo = Memo.new(id)
-  check_file_exist(@memo)
+  @memo = find_memo(id)
   erb :detail
 end
 
 delete '/memos/:id' do |id|
-  memo = Memo.new(id)
-  check_file_exist(memo)
+  memo = find_memo(id)
   memo.delete
   redirect to('/memos')
 end
 
 get '/memos/:id/edit' do |id|
-  @memo = Memo.new(id)
-  check_file_exist(@memo)
+  @memo = find_memo(id)
   erb :edit
 end
 
 patch '/memos/:id' do |id|
-  memo = Memo.new(id)
-  check_file_exist(memo)
-  memo.save(params[:title], params[:description])
+  memo = find_memo(id)
+  memo.update(params[:title], params[:description])
   redirect to('/memos')
 end
 
