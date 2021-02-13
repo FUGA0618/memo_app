@@ -14,7 +14,7 @@ helpers do
   def find_memo(id)
     memo = Memo.find(id)
     halt 404 unless memo
-    Memo.new(id, memo[0]['title'], memo[0]['description'])
+    Memo.new(id, memo['title'], memo['description'])
   end
 end
 

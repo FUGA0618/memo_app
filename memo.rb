@@ -26,7 +26,7 @@ class Memo
       query = 'SELECT title, description FROM Memos WHERE id = $1'
       params = [id.to_i]
       memo = Memo.execute_query(query, params)
-      memo.ntuples.zero? ? nil : memo
+      memo.ntuples.zero? ? nil : memo[0]
     end
   end
 
