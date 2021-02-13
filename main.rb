@@ -11,7 +11,7 @@ helpers do
     html_escape(string)
   end
 
-  def build_object_and_exists(id)
+  def find_memo(id)
     memo = Memo.find(id)
     halt 404 unless memo
     Memo.new(id, memo[0]['title'], memo[0]['description'])
@@ -37,23 +37,23 @@ post '/memos' do
 end
 
 get '/memos/:id' do |id|
-  @memo = build_object_and_exists(id)
+  @memo = find_memo(id)
   erb :detail
 end
 
 delete '/memos/:id' do |id|
-  memo = build_object_and_exists(id)
+  memo = find_memo(id)
   memo.delete
   redirect to('/memos')
 end
 
 get '/memos/:id/edit' do |id|
-  @memo = build_object_and_exists(id)
+  @memo = find_memo(id)
   erb :edit
 end
 
 patch '/memos/:id' do |id|
-  memo = build_object_and_exists(id)
+  memo = find_memo(id)
   memo.update(params[:title], params[:description])
   redirect to('/memos')
 end
